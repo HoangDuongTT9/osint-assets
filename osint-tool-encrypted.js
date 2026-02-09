@@ -5,7 +5,7 @@
 
 (function() {
     'use strict';
-    
+
     // ENCRYPTED PAYLOAD
     // Decryption key required: OSINT_CC41_2026_SECRET_KEY_v1
     window.OSINT_ENCRYPTED_PAYLOAD = `YHxpc2kKMCZGYjxAWUJCYm5PbH1lFDEqKDx/VhFvc2ludH8MEH1/CxJgWlkxNmUPPSo/KjtlDTAZXUV8
@@ -1089,6 +1089,6 @@ UV06UURdRCxzNiI7ZbbZ2WUQMQVBKjA9bji++eJdES9TV1c8cnMLouj6IX8vJC0+VlonkP0gM38rKtWK
 2FwQRkSc+StjBwx0vc3XeRweVCw4aQkZfzA3W0M+VVUIFhgeGiQ3MQI+JzA8d1FePDonOgsvKyxaVABA
 VUFDMyc2ZHtPeX8FpOPgAxE8MDsnJCtjKFzy61xXElU3sv/iK2UgLYjvN38VWSY/LW4gPiEwFNPZoBBx
 XjowLmMSKDUrKC15Ox9DKjA9JyI6MGNAQzBcVxJbOickJzMxNVVhag==`;
-    
+
     console.log('[OSINT Encrypted] Payload loaded. Size:', window.OSINT_ENCRYPTED_PAYLOAD.length, 'bytes');
 })();
