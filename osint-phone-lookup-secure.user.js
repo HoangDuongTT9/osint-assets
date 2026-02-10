@@ -18,8 +18,8 @@
 // @grant        GM_registerMenuCommand
 // @connect      gist.githubusercontent.com
 // @connect      raw.githubusercontent.com
-// @updateURL    https://raw.githubusercontent.com/YOUR_USERNAME/osint-tool/main/osint-phone-lookup-secure.meta.js
-// @downloadURL  https://raw.githubusercontent.com/YOUR_USERNAME/osint-tool/main/osint-phone-lookup-secure.user.js
+// @updateURL    https://raw.githubusercontent.com/HoangDuongTT9/osint-assets/refs/heads/main/osint-phone-lookup-secure.meta.js
+// @downloadURL  https://raw.githubusercontent.com/HoangDuongTT9/osint-assets/refs/heads/main/osint-phone-lookup-secure.user.js
 // @run-at       document-end
 // ==/UserScript==
 
@@ -1231,4 +1231,5 @@
     console.log('[OSINT Phone Lookup Tool] Loaded successfully! Version 2.0.0 (Secure Edition)');
 
 })();
+
 
