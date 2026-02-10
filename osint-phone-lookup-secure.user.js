@@ -31,7 +31,7 @@
         // License check URL (GitHub Gist - Base64 encoded)
         // TODO: Replace with your actual Gist URL encoded in Base64
         // Example: https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/license.json
-        LICENSE_URL: 'aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9ZT1VSX1VTRVJOQU1FL0dJU1RfSUQvcmF3L2xpY2Vuc2UuanNvbg==',
+        LICENSE_URL: 'aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9Ib2FuZ0R1b25nVFQ5L2NmOGZiNGJkODJlN2U4OWYwYjEzNDIxYzBiYWNkMjY0L3Jhdy8xMmU2MWZiNzk0ZTRkNTBiOWQ1MmMyYmNlYzc5M2NkN2VmMTkwYmU5L2xpY2Vuc2VzLmpzb24=',
 
         // Cache duration (1 hour)
         CACHE_DURATION: 3600000,
@@ -1231,3 +1231,4 @@
     console.log('[OSINT Phone Lookup Tool] Loaded successfully! Version 2.0.0 (Secure Edition)');
 
 })();
+
