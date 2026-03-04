@@ -32,7 +32,7 @@
         // License check URL (GitHub Gist - Base64 encoded)
         // TODO: Replace with your actual Gist URL encoded in Base64
         // Example: https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/license.json
-        LICENSE_URL: 'aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9Ib2FuZ0R1b25nVFQ5L2NmOGZiNGJkODJlN2U4OWYwYjEzNDIxYzBiYWNkMjY0L3Jhdy8xMmU2MWZiNzk0ZTRkNTBiOWQ1MmMyYmNlYzc5M2NkN2VmMTkwYmU5L2xpY2Vuc2VzLmpzb24=',
+        LICENSE_URL: 'aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS9Ib2FuZ0R1b25nVFQ5L2NmOGZiNGJkODJlN2U4OWYwYjEzNDIxYzBiYWNkMjY0L3Jhdy9saWNlbnNlcy5qc29u',
 
         // Cache duration (1 hour)
         CACHE_DURATION: 3600000,
@@ -1362,7 +1362,7 @@
         // Initialize UI on master pages
         if (window.location.href.includes('google.com') || window.location.href.includes('about:blank')) {
             UIManager.init();
-            Utils.showToast('🚀 OSINT Tool Ready! (Secure Edition v2.0.0)', 'success');
+            Utils.showToast('🚀 OSINT Tool Ready! (Secure Edition v2.1.0)', 'success');
         }
 
         // Auto-fill on QuetSDT page
@@ -1394,6 +1394,6 @@
         });
     }
 
-    console.log('[OSINT Phone Lookup Tool] Loaded successfully! Version 2.0.0 (Secure Edition)');
+    console.log('[OSINT Phone Lookup Tool] Loaded successfully! Version 2.1.0 (Secure Edition)');
 
 })();
