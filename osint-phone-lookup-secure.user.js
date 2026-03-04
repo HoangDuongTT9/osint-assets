@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name         OSINT Phone Lookup Tool (Secure Edition)
 // @namespace    http://tampermonkey.net/
-// @version      2.0.0
-// @description  Advanced OSINT tool with auto-update and remote kill-switch
+// @version      2.1.0
+// @description  Advanced OSINT tool with auto-update and remote kill-switch + VietQR Automation
 // @author       Your Name
 // @match        https://www.google.com/*
 // @match        about:blank
 // @match        https://uidphone.xyz/*
 // @match        https://www.facebook.com/*
 // @match        https://chat.zalo.me/*
+// @match        https://vietqr.net/*
 // @icon         data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%234A90E2"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 00-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
 // @grant        GM_openInTab
 // @grant        GM_setValue
@@ -18,8 +19,8 @@
 // @grant        GM_registerMenuCommand
 // @connect      gist.githubusercontent.com
 // @connect      raw.githubusercontent.com
-// @updateURL    https://raw.githubusercontent.com/HoangDuongTT9/osint-assets/refs/heads/main/osint-phone-lookup-secure.meta.js
-// @downloadURL  https://raw.githubusercontent.com/HoangDuongTT9/osint-assets/refs/heads/main/osint-phone-lookup-secure.user.js
+// @updateURL    https://raw.githubusercontent.com/YOUR_USERNAME/osint-tool/main/osint-phone-lookup-secure.meta.js
+// @downloadURL  https://raw.githubusercontent.com/YOUR_USERNAME/osint-tool/main/osint-phone-lookup-secure.user.js
 // @run-at       document-end
 // ==/UserScript==
 
@@ -40,7 +41,7 @@
         ALLOW_OFFLINE: false,
 
         // Current version
-        CURRENT_VERSION: '2.0.0'
+        CURRENT_VERSION: '2.1.0'
     };
 
     // ==================== CONFIGURATION ====================
@@ -1182,6 +1183,166 @@
         }, 5000);
     }
 
+    // ==================== VIETQR AUTOMATION ====================
+    class VietQRAutomation {
+        static init() {
+            if (!window.location.href.includes('vietqr.net')) return;
+            console.log('[OSINT] Initializing VietQR Automation...');
+            this.injectStyles();
+            this.createPanel();
+        }
+
+        static injectStyles() {
+            GM_addStyle(`
+                .vqr-automation-panel {
+                    position: fixed; top: 100px; right: 20px; width: 280px;
+                    background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px);
+                    border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); z-index: 1000002;
+                    padding: 15px; font-family: 'Segoe UI', Arial, sans-serif; color: white;
+                }
+                .vqr-header {
+                    font-size: 14px; font-weight: bold; margin-bottom: 15px;
+                    display: flex; align-items: center; gap: 8px; color: #4facfe;
+                }
+                .vqr-field { margin-bottom: 12px; }
+                .vqr-label { display: block; font-size: 11px; opacity: 0.7; margin-bottom: 5px; }
+                .vqr-input {
+                    width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+                    border-radius: 6px; padding: 8px; color: white; font-size: 13px;
+                }
+                .vqr-input:focus { outline: none; border-color: #4facfe; }
+                .vqr-btn {
+                    width: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white; border: none; border-radius: 8px; padding: 10px;
+                    font-weight: bold; cursor: pointer; margin-top: 5px; transition: all 0.3s;
+                }
+                .vqr-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); }
+                .vqr-btn:active { transform: translateY(0); }
+                .vqr-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+            `);
+        }
+
+        static createPanel() {
+            const panel = document.createElement('div');
+            panel.className = 'vqr-automation-panel';
+            panel.innerHTML = `
+                <div class="vqr-header">⚡ VietQR Automation</div>
+                <div class="vqr-field">
+                    <label class="vqr-label">Nội dung chuyển khoản:</label>
+                    <input type="text" id="vqr-content" class="vqr-input" placeholder="Nhập nội dung...">
+                </div>
+                <div class="vqr-field">
+                    <label class="vqr-label">Số tiền:</label>
+                    <input type="text" id="vqr-amount" class="vqr-input" placeholder="VD: 50000">
+                </div>
+                <button id="vqr-start-btn" class="vqr-btn">🚀 Bắt đầu Automation</button>
+            `;
+            document.body.appendChild(panel);
+
+            document.getElementById('vqr-start-btn').addEventListener('click', () => this.runAutomation());
+        }
+
+        static async runAutomation() {
+            const content = document.getElementById('vqr-content').value.trim();
+            const amount = document.getElementById('vqr-amount').value.trim();
+
+            if (!content || !amount) {
+                alert('Vui lòng nhập đầy đủ nội dung và số tiền!');
+                return;
+            }
+
+            const btn = document.getElementById('vqr-start-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Đang xử lý...';
+
+            try {
+                // 1. Click dropdown icon và chọn ngân hàng
+                const dropdownIcon = document.querySelector('.v-icon__svg');
+                if (dropdownIcon) {
+                    dropdownIcon.parentElement.click();
+                    await Utils.sleep(1000);
+
+                    const listItem = document.getElementById('list-item-163-72');
+                    if (listItem) {
+                        listItem.click();
+                        await Utils.sleep(800);
+                    } else {
+                        console.warn('[OSINT] Không tìm thấy listItem 163-72');
+                    }
+                }
+
+                // 2. Nhập Số tài khoản (id="input-128")
+                const acctInput = document.getElementById('input-128') || this.findInputByLabel('Số tài khoản');
+                if (acctInput) {
+                    acctInput.focus();
+                    await typeIntoInput(acctInput, '100200686868', 50);
+                }
+
+                // 3. Nhập Tên chủ tài khoản (id="input-131")
+                const nameInput = document.getElementById('input-131') || this.findInputByLabel('Tên chủ tài khoản');
+                if (nameInput) {
+                    nameInput.focus();
+                    await typeIntoInput(nameInput, 'WELCOME VINA DEBT TRADING CO., LTD', 30);
+                }
+
+                // 4. Mở Tùy chọn thêm
+                const expandLink = document.querySelector('.hover-darker.hover-pointer.text-caption.text-grey');
+                if (expandLink) {
+                    expandLink.click();
+                    await Utils.sleep(1000);
+                }
+
+                // 5. Nhập Số tiền
+                const amountInput = this.findInputByLabel('Số tiền');
+                if (amountInput) {
+                    amountInput.focus();
+                    await typeIntoInput(amountInput, amount, 50);
+                }
+
+                // 6. Nhập Nội dung (id="ipt_trxAddInfo")
+                const infoInput = document.getElementById('ipt_trxAddInfo');
+                if (infoInput) {
+                    infoInput.focus();
+                    await typeIntoInput(infoInput, content, 50);
+                }
+
+                // 7. Tick checkbox
+                const ripple = document.querySelector('.v-input--selection-controls__ripple');
+                if (ripple) {
+                    ripple.click();
+                    await Utils.sleep(500);
+                }
+
+                // 8. Click Tạo mã
+                const submitBtn = document.querySelector('.btn.btn-main.btn-sm');
+                if (submitBtn) {
+                    submitBtn.click();
+                    Utils.showToast('✅ Đã kích hoạt lệnh tạo mã', 'success');
+                } else {
+                    Utils.showToast('⚠️ Không tìm thấy nút Tạo mã', 'warning');
+                }
+
+            } catch (error) {
+                console.error('[OSINT] Automation error:', error);
+                alert('Có lỗi xảy ra trong quá trình automation. Vui lòng kiểm tra console.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Bắt đầu Automation';
+            }
+        }
+
+        static findInputByLabel(text) {
+            const labels = Array.from(document.querySelectorAll('label'));
+            const targetLabel = labels.find(l => l.innerText.includes(text));
+            if (targetLabel) {
+                // Thử element tiếp theo hoặc input bên trong container
+                return targetLabel.parentElement.querySelector('input') || document.getElementById(targetLabel.getAttribute('for'));
+            }
+            return null;
+        }
+    }
+
     // ==================== INITIALIZATION WITH SECURITY CHECK ====================
     const queueManager = new QueueManager();
 
@@ -1213,6 +1374,11 @@
         if (window.location.href.includes('chat.zalo.me')) {
             detectAndAutoFillZalo();
         }
+
+        // Initialize VietQR Automation
+        if (window.location.href.includes('vietqr.net')) {
+            VietQRAutomation.init();
+        }
     }
 
     // Run initialization when page loads
@@ -1231,5 +1397,3 @@
     console.log('[OSINT Phone Lookup Tool] Loaded successfully! Version 2.0.0 (Secure Edition)');
 
 })();
-
-
