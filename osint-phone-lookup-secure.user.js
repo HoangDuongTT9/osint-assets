@@ -1257,10 +1257,10 @@
             btn.textContent = '⏳ Đang xử lý...';
 
             try {
-                // 1. Click dropdown icon và chọn ngân hàng
-                const dropdownIcon = document.querySelector('.v-icon__svg');
-                if (dropdownIcon) {
-                    dropdownIcon.parentElement.click();
+                // 1. Click vào ô tìm kiếm ngân hàng (id="input-166") và chọn ngân hàng
+                const bankInput = document.getElementById('input-166');
+                if (bankInput) {
+                    bankInput.click();
                     await Utils.sleep(1000);
 
                     const listItem = document.getElementById('list-item-163-72');
@@ -1270,6 +1270,12 @@
                     } else {
                         console.warn('[OSINT] Không tìm thấy listItem 163-72');
                     }
+                } else {
+                    console.warn('[OSINT] Không tìm thấy bankInput id="input-166"');
+                    // Fallback sang icon cũ nếu không tìm thấy ID cụ thể
+                    const dropdownIcon = document.querySelector('.v-icon__svg');
+                    if (dropdownIcon) dropdownIcon.parentElement.click();
+                    await Utils.sleep(1000);
                 }
 
                 // 2. Nhập Số tài khoản (id="input-128")
