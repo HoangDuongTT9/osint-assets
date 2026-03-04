@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OSINT Phone Lookup Tool (Secure Edition)
 // @namespace    http://tampermonkey.net/
-// @version      2.1.0
+// @version      2.1.1
 // @description  Advanced OSINT tool with auto-update and remote kill-switch + VietQR Automation
 // @author       Your Name
 // @match        https://www.google.com/*
@@ -41,7 +41,7 @@
         ALLOW_OFFLINE: false,
 
         // Current version
-        CURRENT_VERSION: '2.1.0'
+        CURRENT_VERSION: '2.1.4'
     };
 
     // ==================== CONFIGURATION ====================
@@ -1257,24 +1257,41 @@
             btn.textContent = '⏳ Đang xử lý...';
 
             try {
-                // 1. Click vào ô tìm kiếm ngân hàng (id="input-166") và chọn ngân hàng
-                const bankInput = document.getElementById('input-166');
-                if (bankInput) {
-                    bankInput.click();
-                    await Utils.sleep(1000);
+                // 1. Mở danh sách ngân hàng và tìm Woori Bank
+                const bankSlot = document.querySelector('.v-select__slot');
+                if (bankSlot) {
+                    bankSlot.click();
+                    await Utils.sleep(800);
 
-                    const listItem = document.getElementById('list-item-163-72');
-                    if (listItem) {
-                        listItem.click();
+                    // Nhập ký tự "W" vào ô tìm kiếm (thường là id="input-119" hoặc tương đương)
+                    const searchInput = bankSlot.querySelector('input') || document.getElementById('input-119');
+                    if (searchInput) {
+                        searchInput.focus();
+                        await typeIntoInput(searchInput, 'W', 100);
+                        await Utils.sleep(1200); // Đợi list lọc
+                    }
+
+                    // Tìm listItem có text Woori
+                    const listItems = Array.from(document.querySelectorAll('.v-list-item'));
+                    const wooriItem = listItems.find(item => item.innerText.includes('Woori') || item.innerText.includes('WVN') || item.innerText.includes('Việt Nam'));
+
+                    if (wooriItem) {
+                        wooriItem.click();
                         await Utils.sleep(800);
+                        console.log('[OSINT] Đã chọn ngân hàng Woori Việt Nam');
                     } else {
-                        console.warn('[OSINT] Không tìm thấy listItem 163-72');
+                        console.warn('[OSINT] Không tìm thấy ngân hàng Woori trong danh sách');
+                        // Fallback cũ nếu không tìm thấy Woori
+                        const fallbackItem = document.getElementById('list-item-163-72') || document.getElementById('list-item-161-72');
+                        if (fallbackItem) {
+                            fallbackItem.click();
+                            await Utils.sleep(800);
+                        }
                     }
                 } else {
-                    console.warn('[OSINT] Không tìm thấy bankInput id="input-166"');
-                    // Fallback sang icon cũ nếu không tìm thấy ID cụ thể
-                    const dropdownIcon = document.querySelector('.v-icon__svg');
-                    if (dropdownIcon) dropdownIcon.parentElement.click();
+                    console.warn('[OSINT] Không tìm thấy .v-select__slot');
+                    const bankInput = document.getElementById('input-166');
+                    if (bankInput) bankInput.click();
                     await Utils.sleep(1000);
                 }
 
@@ -1313,12 +1330,24 @@
                     await typeIntoInput(infoInput, content, 50);
                 }
 
-                // 7. Tick checkbox
-                const ripple = document.querySelector('.v-input--selection-controls__ripple');
-                if (ripple) {
-                    ripple.click();
-                    await Utils.sleep(500);
+                // 7. Tick checkbox (Chọn cái THỨ 2 theo yêu cầu user)
+                console.log('[OSINT] Đang tìm checkbox thứ 2...');
+                const ripples = document.querySelectorAll('.v-input--selection-controls__ripple');
+                const checkboxInputs = document.querySelectorAll('input[type="checkbox"]');
+                const labels = Array.from(document.querySelectorAll('label, span, div')).filter(el => el.innerText && el.innerText.includes('Đồng ý'));
+
+                if (ripples.length >= 2) {
+                    ripples[1].click();
+                    console.log('[OSINT] Đã click ripple thứ 2');
+                } else if (checkboxInputs.length >= 2) {
+                    checkboxInputs[1].click();
+                    console.log('[OSINT] Đã click input checkbox thứ 2');
+                } else if (labels.length >= 1) {
+                    labels[labels.length - 1].click();
+                    console.log('[OSINT] Đã click label checkbox cuối cùng');
                 }
+
+                await Utils.sleep(1200); // Đợi nút "Tạo mã" xuất hiện
 
                 // 8. Click Tạo mã
                 const submitBtn = document.querySelector('.btn.btn-main.btn-sm');
@@ -1326,7 +1355,8 @@
                     submitBtn.click();
                     Utils.showToast('✅ Đã kích hoạt lệnh tạo mã', 'success');
                 } else {
-                    Utils.showToast('⚠️ Không tìm thấy nút Tạo mã', 'warning');
+                    console.warn('[OSINT] Không tìm thấy nút Tạo mã sau khi click checkbox');
+                    Utils.showToast('⚠️ Không tìm thấy nút Tạo mã. Thử click thủ công vào ô Đồng ý.', 'warning');
                 }
 
             } catch (error) {
